@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TSPlayer</title>
+</head>
+<body>
+<div>
+    <div class="player">
+        <span id="playerCurrentTime"></span>
+        <input type="range" class="slider" id="playerSlider"/>
+        <select id="playerScale"></select>
+    </div>
+    <hr/>
+    <div class="player-pane">
+        <div class="y-axis-label">
+            <div id="maxYPlaceholder">1000</div>
+            <div id="minYPlaceholder">-1000</div>
+        </div>
+        <div class="player-area">
+            <svg id="drawArea" class="draw-area" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg"
+                 transform="scale(1,-1)">
+            </svg>
+            <div class="x-axis-label">
+                <div id="minXPlaceholder">t min</div>
+                <div id="maxXPlaceholder">t max</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .player-pane {
+        display: flex;
+    }
+
+    .player-area {
+        width: 100%;
+    }
+
+    .player {
+        display: flex;
+    }
+
+    .slider {
+        width: 100%;
+    }
+
+    .draw-area {
+        height: 400px;
+        width: 100%;
+    }
+
+    .x-axis-label {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .y-axis-label {
+    }
+</style>
+<script src="bundle.js"></script>
+<script>
+    const POINTS_LIMIT = 1000;
+    const times = {
+        begin: 0,
+        end: 0,
+    }
+
+    let ws = null;
+
+    const getProtocol = () => {
+        return location.protocol === 'https:' ? 'wss:' : 'ws:';
+    }
+
+    const connectWs = () => {
+        ws = new WebSocket(`${getProtocol()}//${location.host}/ws`);
+        ws.binaryType = 'arraybuffer';
+
+        ws.onmessage = (m) => {
+            times.end = new Date().getTime();
+            window.drawFrame(avro_decode(m.data).values);
+            console.log(`Fetched by ${times.end - times.begin}ms`)
+        }
+        ws.onerror = (e) => {
+            console.error(e);
+        };
+        ws.onclose = () => {
+            console.log('Reconnect after 1 second');
+            setTimeout(() => {
+                connectWs();
+            }, 1000);
+        }
+    }
+    connectWs();// add correct order
+
+    const fetchData = (key, minX, maxX) => {
+        const timeBucket = Math.max(Math.round((maxX - minX) / POINTS_LIMIT), 1);
+        times.begin = new Date().getTime();
+        ws.send(
+            JSON.stringify({
+                key: key,
+                from: minX,
+                to: maxX,
+                aggregation: 'AVG',
+                timeBucket: timeBucket
+            })
+        );
+    };
+
+    const fetchMeta = (key) => {
+        return fetch(`/series/${key}`)
+            .then(res => res.json());
+    }
+
+    // const KEY = prompt('Enter series name', 'mydata7');
+    const KEY = 'mydata7';
+    const EPS = 0.0001;
+    const X_NORMALIZATION = 400;
+    const Y_NORMALIZATION = 100;
+    const PLAYER_SCALES = [
+        {
+            label: '1m',
+            value: 60
+        },
+        {
+            label: '1h',
+            value: 60 * 60
+        },
+        {
+            label: '6h',
+            value: 6 * 60 * 60
+        },
+        {
+            label: '1d',
+            value: 24 * 60 * 60
+        },
+        {
+            label: '1w',
+            value: 7 * 24 * 60 * 60
+        },
+        {
+            label: '30d',
+            value: 30 * 24 * 60 * 60
+        }
+    ];
+    window.addEventListener('load', () => {
+        const $ = {
+            playerCurrentTime: document.getElementById('playerCurrentTime'),
+            player: document.getElementById('playerSlider'),
+            playerScale: document.getElementById('playerScale'),
+            draw: document.getElementById('drawArea'),
+            minXPlaceholder: document.getElementById('minXPlaceholder'),
+            maxXPlaceholder: document.getElementById('maxXPlaceholder'),
+            minYPlaceholder: document.getElementById('minYPlaceholder'),
+            maxYPlaceholder: document.getElementById('maxYPlaceholder'),
+        };
+
+        PLAYER_SCALES.forEach(scale => {
+            const $el = document.createElement('option');
+            $el.value = scale.value;
+            $el.label = scale.label;
+
+            $.playerScale.append($el);
+        });
+
+        const chart = {
+            globalMinX: 0,
+            globalMaxX: 0,
+
+            minX: 0,
+            maxX: 0,
+
+            minY: 0,
+            maxY: 0,
+
+            time: 0,
+            scale: 60,
+        };
+
+        const chartSetMinX = (x) => {
+            chart.minX = x;
+            $.minXPlaceholder.innerText = new Date(chart.minX * 1000).toISOString();
+        }
+        const chartSetMaxX = (x) => {
+            chart.maxX = x;
+            $.maxXPlaceholder.innerText = new Date(chart.maxX * 1000).toISOString();
+        }
+        const chartSetMinY = (y) => {
+            chart.minY = Math.round(y);
+            $.minYPlaceholder.innerText = chart.minY;
+        }
+        const chartSetMaxY = (y) => {
+            chart.maxY = Math.round(y);
+            $.maxYPlaceholder.innerText = chart.maxY;
+        }
+        const setChartScale = (scale) => {
+            chart.scale = scale;
+            draw();
+        }
+        const setChartTime = (time) => {
+            chart.time = time;
+            draw();
+            $.player.setAttribute('value', time);
+        }
+        const setGlobalMinTime = (time) => {
+            chart.globalMinX = time;
+            $.player.setAttribute('min', chart.globalMinX);
+        }
+        const setGlobalMaxTime = (time) => {
+            chart.globalMaxX = time;
+            $.player.setAttribute('max', chart.globalMaxX);
+        }
+
+        $.player.addEventListener('change', () => {
+            setChartTime($.player.value);
+        });
+
+        $.playerScale.addEventListener('change', () => {
+            setChartScale($.playerScale.value);
+        });
+
+        const transformPointsToSvgFormat = (points) => {
+            return points
+                .map(point => [
+                    (point.timestamp - chart.minX) / (chart.maxX - chart.minX + EPS) * X_NORMALIZATION,
+                    (point.value - chart.minY) / (chart.maxY - chart.minY + EPS) * Y_NORMALIZATION
+                ])
+                .map(point => `${point[0]},${point[1]}`)
+                .join(' ');
+        };
+
+        const draw = () => {
+            fetchData(KEY, chart.time - chart.scale, chart.time);
+        }
+
+        fetchMeta(KEY)
+            .then(meta => {
+                setGlobalMinTime(meta.minTimestamp);
+                setGlobalMaxTime(meta.maxTimestamp);
+                setChartTime(meta.maxTimestamp);
+            });
+
+        window.drawFrame = (points) => {
+            chartSetMinX(Math.min(...points.map(point => point.timestamp)));
+            chartSetMaxX(Math.max(...points.map(point => point.timestamp)));
+            chartSetMinY(Math.min(...points.map(point => point.value)));
+            chartSetMaxY(Math.max(...points.map(point => point.value)));
+
+            $.playerCurrentTime.innerText = new Date(chart.maxX * 1000).toISOString();
+
+            $.draw.innerHTML = '';
+            const $lineCurve = document
+                .createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            $lineCurve.setAttribute('vector-effect', 'non-scaling-stroke');
+            $lineCurve.setAttribute('points', transformPointsToSvgFormat(points));
+            $lineCurve.setAttribute('stroke', 'black');
+            $lineCurve.setAttribute('stroke-width', '1');
+            $lineCurve.setAttribute('fill', 'none');
+
+            $.draw.append($lineCurve);
+        }
+    });
+</script>
+</body>
+</html>

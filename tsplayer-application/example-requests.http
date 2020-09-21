@@ -1,0 +1,39 @@
+POST http://localhost:8080/series
+Content-Type: application/json
+
+{
+  "name": "mydata5"
+}
+
+###
+
+GET http://localhost:8080/series/mydata5
+
+###
+
+POST http://localhost:8080/series/mydata2/values
+Content-Type: application/json
+
+[
+  {
+    "timestamp": 1600759277,
+    "value": 42
+  },
+  {
+    "timestamp": 1600759377,
+    "value": 43
+  },
+  {
+    "timestamp": 1600759477,
+    "value": 44
+  },
+  {
+    "timestamp": 1600759577,
+    "value": 45
+  }
+]
+
+
+###
+
+GET http://localhost:8080/series/mydata3/values?from=1600783227&to=1600883226&aggregation=AVG&timeBucket=500
