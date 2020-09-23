@@ -1,0 +1,16 @@
+language: java
+jdk:
+  - openjdk11
+
+sudo: required
+services:
+  - docker
+
+jobs:
+  include:
+    - stage: test
+      sudo: true
+      services: []
+      install: skip
+      script: cd tsplayer-application && ./mvnw verify
+
