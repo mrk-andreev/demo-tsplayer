@@ -13,6 +13,7 @@ import name.mrkandreev.tsplayer.dto.SeriesMetaDto;
 import name.mrkandreev.tsplayer.dto.ValueInput;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.exceptions.JedisDataException;
 
 @ApplicationScoped
 public class DataService {
@@ -32,7 +33,11 @@ public class DataService {
   }
 
   public Value[] fetch(String key, Long from, Long to, Aggregation aggregation, Long timeBucket) {
-    return rts.range(key, from, to, aggregation, timeBucket);
+    try {
+      return rts.range(key, from, to, aggregation, timeBucket);
+    } catch (JedisDataException e) {
+      return new Value[0];
+    }
   }
 
   public void upload(String key, ValueInput... values) {
@@ -43,7 +48,12 @@ public class DataService {
   }
 
   public SeriesMetaDto getMeta(String key) {
-    Info info = rts.info(key);
-    return new SeriesMetaDto(info.getProperty("firstTimestamp"), info.getProperty("lastTimestamp"));
+    try {
+      Info info = rts.info(key);
+      return new SeriesMetaDto(
+          info.getProperty("firstTimestamp"), info.getProperty("lastTimestamp"));
+    } catch (JedisDataException e) {
+      return null;
+    }
   }
 }

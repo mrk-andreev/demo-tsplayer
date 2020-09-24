@@ -1,0 +1,17 @@
+{
+  "name": "tsplayer-ui",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "build": "browserify main.js | terser --compress --mangle > bundle.min.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "avsc": "^5.4.22",
+    "browserify": "^16.5.2",
+    "rxjs": "^6.6.3",
+    "terser": "^5.3.2"
+  }
+}
