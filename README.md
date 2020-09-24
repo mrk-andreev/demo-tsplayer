@@ -33,12 +33,12 @@ services:
 
 
 # Architecture
-![](assets/preview.png)
+![](tsplayer-assets/preview.png)
 
 # Data player
-![](assets/preview-player.png)
+![](tsplayer-assets/preview-player.png)
 
 # Protocol
 
-![](assets/preview-ws.png)
+![](tsplayer-assets/preview-ws.png)
 
