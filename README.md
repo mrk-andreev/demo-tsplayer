@@ -29,7 +29,7 @@ services:
       STEPS_COUNT: 10000000
 ```
 
-[![Video](https://img.youtube.com/vi/cIc6v9Pygyg/0.jpg)](https://www.youtube.com/watch?v=cIc6v9Pygyg)
+[![Video](tsplayer-assets/player-example.gif)](https://www.youtube.com/watch?v=cIc6v9Pygyg)
 
 
 # Architecture
