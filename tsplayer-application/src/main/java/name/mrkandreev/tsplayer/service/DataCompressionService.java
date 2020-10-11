@@ -44,11 +44,7 @@ public class DataCompressionService {
   public ByteBuffer compressError(String requestId, String errorMessage) {
     try {
       DataResponse dataResponse =
-          new DataResponse(
-              requestId,
-              !IS_SUCCESS,
-              errorMessage,
-              Collections.emptyList());
+          new DataResponse(requestId, !IS_SUCCESS, errorMessage, Collections.emptyList());
 
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(out, null);

@@ -16,11 +16,9 @@ import name.mrkandreev.tsplayer.service.DataService;
 public class SeriesSocket {
   private static final JsonMapper mapper = new JsonMapper();
 
-  @Inject
-  DataService dataService;
+  @Inject DataService dataService;
 
-  @Inject
-  DataCompressionService dataCompressionService;
+  @Inject DataCompressionService dataCompressionService;
 
   @OnMessage
   public void onMessage(Session session, String message) throws IOException {
@@ -40,13 +38,7 @@ public class SeriesSocket {
     } catch (Exception e) {
       session
           .getAsyncRemote()
-          .sendBinary(
-              dataCompressionService.
-                  compressError(
-                      request.getRequestId(),
-                      e.getMessage()
-                  )
-          );
+          .sendBinary(dataCompressionService.compressError(request.getRequestId(), e.getMessage()));
     }
   }
 }
