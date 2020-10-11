@@ -28,6 +28,7 @@ public class SeriesSocket {
         .getAsyncRemote()
         .sendBinary(
             dataCompressionService.compress(
+                request.getRequestId(),
                 dataService.fetch(
                     request.getKey(),
                     request.getFrom(),

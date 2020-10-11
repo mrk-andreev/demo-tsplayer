@@ -3,6 +3,9 @@
   "name" : "DataResponse",
   "namespace" : "name.mrkandreev.avro",
   "fields" : [ {
+    "name": "requestId",
+    "type": "string"
+  }, {
     "name" : "values",
     "type" : {
       "type" : "array",

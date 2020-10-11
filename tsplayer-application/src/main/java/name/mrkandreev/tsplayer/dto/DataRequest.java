@@ -5,6 +5,8 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @RegisterForReflection
 public class DataRequest {
+  private String requestId;
+
   private String key;
 
   private Long from;
@@ -53,5 +55,13 @@ public class DataRequest {
 
   public void setTimeBucket(Long timeBucket) {
     this.timeBucket = timeBucket;
+  }
+
+  public String getRequestId() {
+    return requestId;
+  }
+
+  public void setRequestId(String requestId) {
+    this.requestId = requestId;
   }
 }

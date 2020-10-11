@@ -1,6 +1,7 @@
 import datetime
 import os
 import random
+import time
 
 import requests
 import tqdm
@@ -9,7 +10,7 @@ from src.utils import get_logger
 
 logger = get_logger(__name__, 'DEBUG')
 
-SERIES_NAME = os.environ.get('SERIES_NAME', 'mydata7')
+SERIES_NAME = os.environ.get('SERIES_NAME', 'mydata')
 STEP_SECONDS = int(os.environ.get('STEP_SECONDS', '1'))
 STEPS_COUNT = int(os.environ.get('STEPS_COUNT', '10000000'))
 RANDOM_INC_RANGE = (
@@ -20,6 +21,7 @@ SERVICE_HOST = os.environ.get('SERVICE_HOST', 'localhost:8080')
 ENDPOINT_UPLOAD = f'http://{SERVICE_HOST}/series/{SERIES_NAME}/values'
 ENDPOINT_INIT = f'http://{SERVICE_HOST}/series'
 BATCH_SIZE = int(os.environ.get('BATCH_SIZE', '10000'))
+SLEEP_AFTER_FAIL = int(os.environ.get('SLEEP_AFTER_FAIL', '1'))
 
 
 def _chunks(lst, n):
@@ -61,15 +63,25 @@ def _init():
         raise ValueError(r)
 
 
-def _upload(data):
+def _request(chunk, *, http):
+    while True:
+        try:
+            r = http.post(
+                ENDPOINT_UPLOAD,
+                json=chunk
+            )
+            if not r.ok:
+                raise ValueError(r)
+            return
+        except Exception as e:
+            logger.exception(e)
+            time.sleep(SLEEP_AFTER_FAIL)
+
+
+def _upload(dataset):
     http = requests.Session()
-    for chunk in data:
-        r = http.post(
-            ENDPOINT_UPLOAD,
-            json=chunk
-        )
-        if not r.ok:
-            raise ValueError(r)
+    for chunk in dataset:
+        _request(chunk, http=http)
 
 
 def main():

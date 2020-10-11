@@ -16,10 +16,11 @@ import org.apache.avro.specific.SpecificDatumWriter;
 
 @ApplicationScoped
 public class DataCompressionService {
-  public ByteBuffer compress(Value... values) {
+  public ByteBuffer compress(String requestId, Value... values) {
     try {
       DataResponse dataResponse =
           new DataResponse(
+              requestId,
               Stream.of(values)
                   .map(value -> new DataResponseValue(value.getTime(), value.getValue()))
                   .collect(Collectors.toList()));
@@ -29,10 +30,13 @@ public class DataCompressionService {
       DatumWriter<DataResponse> writer = new SpecificDatumWriter<>(DataResponse.getClassSchema());
       writer.write(dataResponse, encoder);
       encoder.flush();
-      out.close();
       return ByteBuffer.wrap(out.toByteArray());
     } catch (IOException e) {
       return ByteBuffer.wrap(new byte[0]);
     }
+  }
+
+  public String getSchema() {
+    return DataResponse.getClassSchema().toString();
   }
 }
