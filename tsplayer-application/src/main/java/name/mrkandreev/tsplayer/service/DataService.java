@@ -17,6 +17,7 @@ import redis.clients.jedis.exceptions.JedisDataException;
 
 @ApplicationScoped
 public class DataService {
+  private static final double POINTS_LIMIT = 1000d;
   private final RedisTimeSeries rts;
 
   public DataService(RedisConfig redisConfig) {
@@ -32,7 +33,12 @@ public class DataService {
     return rts.create(input.getName());
   }
 
-  public Value[] fetch(String key, Long from, Long to, Aggregation aggregation, Long timeBucket) {
+  public Value[] fetch(String key, Long from, Long to, Aggregation aggregation) {
+    if (from > to) {
+      throw new IllegalArgumentException("'from' must be lower or equal than 'to'");
+    }
+
+    long timeBucket = (Math.max(Math.round((to - from) / POINTS_LIMIT), 1L));
     try {
       return rts.range(key, from, to, aggregation, timeBucket);
     } catch (JedisDataException e) {

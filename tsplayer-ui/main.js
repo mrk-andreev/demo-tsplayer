@@ -55,7 +55,6 @@
     const WS_RECONNECT_TIMEOUT = 1000;
     const WS_WAIT_CONNECTION_TIMEOUT = 100;
     const META_RETRY_TIMEOUT = 500;
-    const POINTS_LIMIT = 1000;
 
     let wsConnection = null;
     const connectWs = (subscriber) => {
@@ -91,17 +90,13 @@
                 requestDataSlice(requestId, key, minX, maxX);
             }, WS_WAIT_CONNECTION_TIMEOUT);
         } else {
-            const timeBucket = Math.max(Math.round((maxX - minX) / POINTS_LIMIT), 1);
-
-            FETCH_TIMING.begin = new Date().getTime();
             wsConnection.send(
                 JSON.stringify({
                     requestId: requestId,
                     key: key,
                     from: minX,
                     to: maxX,
-                    aggregation: 'AVG',
-                    timeBucket: timeBucket
+                    aggregation: 'AVG'
                 })
             );
         }
@@ -197,6 +192,7 @@
         const requestData = () => {
             const requestId = uuidv4();
             REQUEST_ANCHOR.requestId = requestId;
+            FETCH_TIMING.begin = new Date().getTime();
             requestDataSlice(requestId, KEY, chart.time - chart.scale, chart.time);
         }
 

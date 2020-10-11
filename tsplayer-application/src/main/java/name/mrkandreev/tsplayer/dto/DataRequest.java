@@ -15,8 +15,6 @@ public class DataRequest {
 
   private Aggregation aggregation;
 
-  private Long timeBucket;
-
   public String getKey() {
     return key;
   }
@@ -47,14 +45,6 @@ public class DataRequest {
 
   public void setAggregation(Aggregation aggregation) {
     this.aggregation = aggregation;
-  }
-
-  public Long getTimeBucket() {
-    return timeBucket;
-  }
-
-  public void setTimeBucket(Long timeBucket) {
-    this.timeBucket = timeBucket;
   }
 
   public String getRequestId() {
