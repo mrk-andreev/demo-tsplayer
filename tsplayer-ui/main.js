@@ -22,6 +22,12 @@
             "name": "requestId",
             "type": "string"
         }, {
+            "name": "isSuccess",
+            "type": "boolean"
+        }, {
+            "name": "errorMessage",
+            "type": "string"
+        }, {
             "name": "values",
             "type": {
                 "type": "array",
@@ -66,7 +72,12 @@
             if (data.requestId === REQUEST_ANCHOR.requestId) {
                 FETCH_TIMING.end = new Date().getTime();
                 console.log(`Fetched by ${FETCH_TIMING.end - FETCH_TIMING.begin}ms`);
-                subscriber.next(data.values);
+
+                if (data.isSuccess) {
+                    subscriber.next(data.values);
+                } else {
+                    console.error(data.errorMessage);
+                }
             }
         }
         wsConnection.onerror = (e) => {

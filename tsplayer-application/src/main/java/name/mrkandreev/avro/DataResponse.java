@@ -14,8 +14,8 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class DataResponse extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 8604607545477373079L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"DataResponse\",\"namespace\":\"name.mrkandreev.avro\",\"fields\":[{\"name\":\"requestId\",\"type\":\"string\"},{\"name\":\"values\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"DataResponseValue\",\"fields\":[{\"name\":\"timestamp\",\"type\":\"long\"},{\"name\":\"value\",\"type\":\"double\"}]},\"java-class\":\"java.util.List\"}}]}");
+  private static final long serialVersionUID = -3935006226818873985L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"DataResponse\",\"namespace\":\"name.mrkandreev.avro\",\"fields\":[{\"name\":\"requestId\",\"type\":\"string\"},{\"name\":\"isSuccess\",\"type\":\"boolean\"},{\"name\":\"errorMessage\",\"type\":\"string\"},{\"name\":\"values\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"DataResponseValue\",\"fields\":[{\"name\":\"timestamp\",\"type\":\"long\"},{\"name\":\"value\",\"type\":\"double\"}]},\"java-class\":\"java.util.List\"}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -72,6 +72,8 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
   }
 
    private java.lang.CharSequence requestId;
+   private boolean isSuccess;
+   private java.lang.CharSequence errorMessage;
    private java.util.List<name.mrkandreev.avro.DataResponseValue> values;
 
   /**
@@ -84,10 +86,14 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
   /**
    * All-args constructor.
    * @param requestId The new value for requestId
+   * @param isSuccess The new value for isSuccess
+   * @param errorMessage The new value for errorMessage
    * @param values The new value for values
    */
-  public DataResponse(java.lang.CharSequence requestId, java.util.List<name.mrkandreev.avro.DataResponseValue> values) {
+  public DataResponse(java.lang.CharSequence requestId, java.lang.Boolean isSuccess, java.lang.CharSequence errorMessage, java.util.List<name.mrkandreev.avro.DataResponseValue> values) {
     this.requestId = requestId;
+    this.isSuccess = isSuccess;
+    this.errorMessage = errorMessage;
     this.values = values;
   }
 
@@ -97,7 +103,9 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
   public java.lang.Object get(int field$) {
     switch (field$) {
     case 0: return requestId;
-    case 1: return values;
+    case 1: return isSuccess;
+    case 2: return errorMessage;
+    case 3: return values;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -107,7 +115,9 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
     case 0: requestId = (java.lang.CharSequence)value$; break;
-    case 1: values = (java.util.List<name.mrkandreev.avro.DataResponseValue>)value$; break;
+    case 1: isSuccess = (java.lang.Boolean)value$; break;
+    case 2: errorMessage = (java.lang.CharSequence)value$; break;
+    case 3: values = (java.util.List<name.mrkandreev.avro.DataResponseValue>)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -127,6 +137,40 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
    */
   public void setRequestId(java.lang.CharSequence value) {
     this.requestId = value;
+  }
+
+  /**
+   * Gets the value of the 'isSuccess' field.
+   * @return The value of the 'isSuccess' field.
+   */
+  public boolean getIsSuccess() {
+    return isSuccess;
+  }
+
+
+  /**
+   * Sets the value of the 'isSuccess' field.
+   * @param value the value to set.
+   */
+  public void setIsSuccess(boolean value) {
+    this.isSuccess = value;
+  }
+
+  /**
+   * Gets the value of the 'errorMessage' field.
+   * @return The value of the 'errorMessage' field.
+   */
+  public java.lang.CharSequence getErrorMessage() {
+    return errorMessage;
+  }
+
+
+  /**
+   * Sets the value of the 'errorMessage' field.
+   * @param value the value to set.
+   */
+  public void setErrorMessage(java.lang.CharSequence value) {
+    this.errorMessage = value;
   }
 
   /**
@@ -188,6 +232,8 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
     implements org.apache.avro.data.RecordBuilder<DataResponse> {
 
     private java.lang.CharSequence requestId;
+    private boolean isSuccess;
+    private java.lang.CharSequence errorMessage;
     private java.util.List<name.mrkandreev.avro.DataResponseValue> values;
 
     /** Creates a new Builder */
@@ -205,9 +251,17 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
         this.requestId = data().deepCopy(fields()[0].schema(), other.requestId);
         fieldSetFlags()[0] = other.fieldSetFlags()[0];
       }
-      if (isValidValue(fields()[1], other.values)) {
-        this.values = data().deepCopy(fields()[1].schema(), other.values);
+      if (isValidValue(fields()[1], other.isSuccess)) {
+        this.isSuccess = data().deepCopy(fields()[1].schema(), other.isSuccess);
         fieldSetFlags()[1] = other.fieldSetFlags()[1];
+      }
+      if (isValidValue(fields()[2], other.errorMessage)) {
+        this.errorMessage = data().deepCopy(fields()[2].schema(), other.errorMessage);
+        fieldSetFlags()[2] = other.fieldSetFlags()[2];
+      }
+      if (isValidValue(fields()[3], other.values)) {
+        this.values = data().deepCopy(fields()[3].schema(), other.values);
+        fieldSetFlags()[3] = other.fieldSetFlags()[3];
       }
     }
 
@@ -221,9 +275,17 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
         this.requestId = data().deepCopy(fields()[0].schema(), other.requestId);
         fieldSetFlags()[0] = true;
       }
-      if (isValidValue(fields()[1], other.values)) {
-        this.values = data().deepCopy(fields()[1].schema(), other.values);
+      if (isValidValue(fields()[1], other.isSuccess)) {
+        this.isSuccess = data().deepCopy(fields()[1].schema(), other.isSuccess);
         fieldSetFlags()[1] = true;
+      }
+      if (isValidValue(fields()[2], other.errorMessage)) {
+        this.errorMessage = data().deepCopy(fields()[2].schema(), other.errorMessage);
+        fieldSetFlags()[2] = true;
+      }
+      if (isValidValue(fields()[3], other.values)) {
+        this.values = data().deepCopy(fields()[3].schema(), other.values);
+        fieldSetFlags()[3] = true;
       }
     }
 
@@ -268,6 +330,85 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
     }
 
     /**
+      * Gets the value of the 'isSuccess' field.
+      * @return The value.
+      */
+    public boolean getIsSuccess() {
+      return isSuccess;
+    }
+
+
+    /**
+      * Sets the value of the 'isSuccess' field.
+      * @param value The value of 'isSuccess'.
+      * @return This builder.
+      */
+    public name.mrkandreev.avro.DataResponse.Builder setIsSuccess(boolean value) {
+      validate(fields()[1], value);
+      this.isSuccess = value;
+      fieldSetFlags()[1] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'isSuccess' field has been set.
+      * @return True if the 'isSuccess' field has been set, false otherwise.
+      */
+    public boolean hasIsSuccess() {
+      return fieldSetFlags()[1];
+    }
+
+
+    /**
+      * Clears the value of the 'isSuccess' field.
+      * @return This builder.
+      */
+    public name.mrkandreev.avro.DataResponse.Builder clearIsSuccess() {
+      fieldSetFlags()[1] = false;
+      return this;
+    }
+
+    /**
+      * Gets the value of the 'errorMessage' field.
+      * @return The value.
+      */
+    public java.lang.CharSequence getErrorMessage() {
+      return errorMessage;
+    }
+
+
+    /**
+      * Sets the value of the 'errorMessage' field.
+      * @param value The value of 'errorMessage'.
+      * @return This builder.
+      */
+    public name.mrkandreev.avro.DataResponse.Builder setErrorMessage(java.lang.CharSequence value) {
+      validate(fields()[2], value);
+      this.errorMessage = value;
+      fieldSetFlags()[2] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'errorMessage' field has been set.
+      * @return True if the 'errorMessage' field has been set, false otherwise.
+      */
+    public boolean hasErrorMessage() {
+      return fieldSetFlags()[2];
+    }
+
+
+    /**
+      * Clears the value of the 'errorMessage' field.
+      * @return This builder.
+      */
+    public name.mrkandreev.avro.DataResponse.Builder clearErrorMessage() {
+      errorMessage = null;
+      fieldSetFlags()[2] = false;
+      return this;
+    }
+
+    /**
       * Gets the value of the 'values' field.
       * @return The value.
       */
@@ -282,9 +423,9 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
       * @return This builder.
       */
     public name.mrkandreev.avro.DataResponse.Builder setValues(java.util.List<name.mrkandreev.avro.DataResponseValue> value) {
-      validate(fields()[1], value);
+      validate(fields()[3], value);
       this.values = value;
-      fieldSetFlags()[1] = true;
+      fieldSetFlags()[3] = true;
       return this;
     }
 
@@ -293,7 +434,7 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
       * @return True if the 'values' field has been set, false otherwise.
       */
     public boolean hasValues() {
-      return fieldSetFlags()[1];
+      return fieldSetFlags()[3];
     }
 
 
@@ -303,7 +444,7 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
       */
     public name.mrkandreev.avro.DataResponse.Builder clearValues() {
       values = null;
-      fieldSetFlags()[1] = false;
+      fieldSetFlags()[3] = false;
       return this;
     }
 
@@ -313,7 +454,9 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
       try {
         DataResponse record = new DataResponse();
         record.requestId = fieldSetFlags()[0] ? this.requestId : (java.lang.CharSequence) defaultValue(fields()[0]);
-        record.values = fieldSetFlags()[1] ? this.values : (java.util.List<name.mrkandreev.avro.DataResponseValue>) defaultValue(fields()[1]);
+        record.isSuccess = fieldSetFlags()[1] ? this.isSuccess : (java.lang.Boolean) defaultValue(fields()[1]);
+        record.errorMessage = fieldSetFlags()[2] ? this.errorMessage : (java.lang.CharSequence) defaultValue(fields()[2]);
+        record.values = fieldSetFlags()[3] ? this.values : (java.util.List<name.mrkandreev.avro.DataResponseValue>) defaultValue(fields()[3]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -348,6 +491,10 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
   {
     out.writeString(this.requestId);
 
+    out.writeBoolean(this.isSuccess);
+
+    out.writeString(this.errorMessage);
+
     long size0 = this.values.size();
     out.writeArrayStart();
     out.setItemCount(size0);
@@ -370,6 +517,10 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
     if (fieldOrder == null) {
       this.requestId = in.readString(this.requestId instanceof Utf8 ? (Utf8)this.requestId : null);
 
+      this.isSuccess = in.readBoolean();
+
+      this.errorMessage = in.readString(this.errorMessage instanceof Utf8 ? (Utf8)this.errorMessage : null);
+
       long size0 = in.readArrayStart();
       java.util.List<name.mrkandreev.avro.DataResponseValue> a0 = this.values;
       if (a0 == null) {
@@ -389,13 +540,21 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase im
       }
 
     } else {
-      for (int i = 0; i < 2; i++) {
+      for (int i = 0; i < 4; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
           this.requestId = in.readString(this.requestId instanceof Utf8 ? (Utf8)this.requestId : null);
           break;
 
         case 1:
+          this.isSuccess = in.readBoolean();
+          break;
+
+        case 2:
+          this.errorMessage = in.readString(this.errorMessage instanceof Utf8 ? (Utf8)this.errorMessage : null);
+          break;
+
+        case 3:
           long size0 = in.readArrayStart();
           java.util.List<name.mrkandreev.avro.DataResponseValue> a0 = this.values;
           if (a0 == null) {
