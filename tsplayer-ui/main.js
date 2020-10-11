@@ -14,6 +14,7 @@
     /**
      * Binary data deserializer
      */
+    // TODO: fetch schema from backend
     const AVRO_SCHEMA = {
         "type": "record",
         "name": "DataResponse",
