@@ -38,7 +38,7 @@ public class DataService {
       throw new IllegalArgumentException("'from' must be lower or equal than 'to'");
     }
 
-    long timeBucket = (Math.max(Math.round((to - from) / POINTS_LIMIT), 1L));
+    long timeBucket = Math.max(Math.round((to - from) / POINTS_LIMIT), 1L);
     try {
       return rts.range(key, from, to, aggregation, timeBucket);
     } catch (JedisDataException e) {
