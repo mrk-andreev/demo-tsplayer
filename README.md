@@ -1,3 +1,5 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/f3bb0d15d028021493df/maintainability)](https://codeclimate.com/github/mrk-andreev/demo-tsplayer/maintainability)
+
 # demo-tsplayer
 
 - **tsplayer-application** ui+backend (svg + ws + quarkus + graalvm + redistimeseries)
@@ -40,5 +42,29 @@ services:
 
 # Protocol
 
-![](tsplayer-assets/preview-ws.png)
+![](tsplayer-assets/preview-protocol.gif)
 
+Request (json)
+```json
+{
+  "requestId": "<uuid>",
+  "key": "<dataset name>",
+  "from": "<min timestamp>",
+  "to": "<max timestamp>",
+  "aggregation": "<AVG, SUM, MIN, MAX, RANGE, COUNT, FIRST, LAST>"
+}
+```
+Response (binary, avro)
+```json
+{
+  "requestId": "<from request>",
+  "isSuccess": "<no errors>",
+  "errorMessage": "<if not isSuccess than display error message>",
+  "values": [
+    {
+      "timestamp": "<timestamp>",
+      "value": "<double>"
+    } 
+  ]
+}
+```
