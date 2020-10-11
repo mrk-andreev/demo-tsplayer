@@ -5,6 +5,8 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @RegisterForReflection
 public class DataRequest {
+  private String requestId;
+
   private String key;
 
   private Long from;
@@ -12,8 +14,6 @@ public class DataRequest {
   private Long to;
 
   private Aggregation aggregation;
-
-  private Long timeBucket;
 
   public String getKey() {
     return key;
@@ -47,11 +47,11 @@ public class DataRequest {
     this.aggregation = aggregation;
   }
 
-  public Long getTimeBucket() {
-    return timeBucket;
+  public String getRequestId() {
+    return requestId;
   }
 
-  public void setTimeBucket(Long timeBucket) {
-    this.timeBucket = timeBucket;
+  public void setRequestId(String requestId) {
+    this.requestId = requestId;
   }
 }

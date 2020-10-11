@@ -1,17 +1,34 @@
 (() => {
+    const {Type} = require('avsc');
+    const {Observable} = require('rxjs');
+    const {v4: uuidv4} = require('uuid');
+
     const FETCH_TIMING = {
         begin: 0,
         end: 0,
+    };
+    const REQUEST_ANCHOR = {
+        requestId: '',
     };
 
     /**
      * Binary data deserializer
      */
+    // TODO: fetch schema from backend
     const AVRO_SCHEMA = {
         "type": "record",
         "name": "DataResponse",
         "namespace": "name.mrkandreev.avro",
         "fields": [{
+            "name": "requestId",
+            "type": "string"
+        }, {
+            "name": "isSuccess",
+            "type": "boolean"
+        }, {
+            "name": "errorMessage",
+            "type": "string"
+        }, {
             "name": "values",
             "type": {
                 "type": "array",
@@ -30,8 +47,7 @@
             }
         }]
     };
-    const avro = require('avsc');
-    const type = avro.Type.forSchema(AVRO_SCHEMA);
+    const type = Type.forSchema(AVRO_SCHEMA);
     const avroDecode = (buf) => {
         return type.fromBuffer(new Buffer(buf));
     };
@@ -39,7 +55,6 @@
     /**
      * Data layer
      */
-    const {Observable} = require('rxjs');
 
     const getProtocol = () => location.protocol === 'https:' ? 'wss:' : 'ws:';
     const WS_ENDPOINT = `${getProtocol()}//${location.host}/ws`;
@@ -47,17 +62,24 @@
     const WS_RECONNECT_TIMEOUT = 1000;
     const WS_WAIT_CONNECTION_TIMEOUT = 100;
     const META_RETRY_TIMEOUT = 500;
-    const POINTS_LIMIT = 1000;
 
     let wsConnection = null;
     const connectWs = (subscriber) => {
         wsConnection = new WebSocket(WS_ENDPOINT);
         wsConnection.binaryType = 'arraybuffer';
         wsConnection.onmessage = (m) => {
-            FETCH_TIMING.end = new Date().getTime();
-            console.log(`Fetched by ${FETCH_TIMING.end - FETCH_TIMING.begin}ms`);
+            const data = avroDecode(m.data);
 
-            subscriber.next(avroDecode(m.data).values);
+            if (data.requestId === REQUEST_ANCHOR.requestId) {
+                FETCH_TIMING.end = new Date().getTime();
+                console.log(`Fetched by ${FETCH_TIMING.end - FETCH_TIMING.begin}ms`);
+
+                if (data.isSuccess) {
+                    subscriber.next(data.values);
+                } else {
+                    console.error(data.errorMessage);
+                }
+            }
         }
         wsConnection.onerror = (e) => {
             console.error(e);
@@ -74,22 +96,19 @@
     });
     wsResponseListener.subscribe();
 
-    const requestDataSlice = (key, minX, maxX) => {
+    const requestDataSlice = (requestId, key, minX, maxX) => {
         if (wsConnection === null || wsConnection.readyState !== 1) {
             setTimeout(() => {
-                requestDataSlice(key, minX, maxX);
+                requestDataSlice(requestId, key, minX, maxX);
             }, WS_WAIT_CONNECTION_TIMEOUT);
         } else {
-            const timeBucket = Math.max(Math.round((maxX - minX) / POINTS_LIMIT), 1);
-
-            FETCH_TIMING.begin = new Date().getTime();
             wsConnection.send(
                 JSON.stringify({
+                    requestId: requestId,
                     key: key,
                     from: minX,
                     to: maxX,
-                    aggregation: 'AVG',
-                    timeBucket: timeBucket
+                    aggregation: 'AVG'
                 })
             );
         }
@@ -117,7 +136,7 @@
     /**
      * Presentation layer
      */
-    const KEY = 'mydata7';
+    const KEY = 'mydata';
     const EPS = 0.0001;
     const X_NORMALIZATION = 400;
     const Y_NORMALIZATION = 100;
@@ -183,7 +202,10 @@
         };
 
         const requestData = () => {
-            requestDataSlice(KEY, chart.time - chart.scale, chart.time);
+            const requestId = uuidv4();
+            REQUEST_ANCHOR.requestId = requestId;
+            FETCH_TIMING.begin = new Date().getTime();
+            requestDataSlice(requestId, KEY, chart.time - chart.scale, chart.time);
         }
 
         const chartSetMinX = (x) => {

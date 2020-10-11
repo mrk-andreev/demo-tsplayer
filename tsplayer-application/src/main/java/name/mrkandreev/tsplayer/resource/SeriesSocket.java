@@ -24,15 +24,21 @@ public class SeriesSocket {
   public void onMessage(Session session, String message) throws IOException {
     DataRequest request = mapper.readValue(message, DataRequest.class);
 
-    session
-        .getAsyncRemote()
-        .sendBinary(
-            dataCompressionService.compress(
-                dataService.fetch(
-                    request.getKey(),
-                    request.getFrom(),
-                    request.getTo(),
-                    request.getAggregation(),
-                    request.getTimeBucket())));
+    try {
+      session
+          .getAsyncRemote()
+          .sendBinary(
+              dataCompressionService.compress(
+                  request.getRequestId(),
+                  dataService.fetch(
+                      request.getKey(),
+                      request.getFrom(),
+                      request.getTo(),
+                      request.getAggregation())));
+    } catch (Exception e) {
+      session
+          .getAsyncRemote()
+          .sendBinary(dataCompressionService.compressError(request.getRequestId(), e.getMessage()));
+    }
   }
 }

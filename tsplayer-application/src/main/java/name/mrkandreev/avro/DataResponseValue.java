@@ -10,7 +10,6 @@ import org.apache.avro.message.BinaryMessageEncoder;
 import org.apache.avro.message.SchemaStore;
 import org.apache.avro.specific.SpecificData;
 
-@SuppressWarnings("ALL")
 @org.apache.avro.specific.AvroGenerated
 public class DataResponseValue extends org.apache.avro.specific.SpecificRecordBase
     implements org.apache.avro.specific.SpecificRecord {

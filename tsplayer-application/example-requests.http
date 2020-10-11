@@ -2,16 +2,16 @@ POST http://localhost:8080/series
 Content-Type: application/json
 
 {
-  "name": "mydata5"
+  "name": "mydata"
 }
 
 ###
 
-GET http://localhost:8080/series/mydata5
+GET http://localhost:8080/series/mydata
 
 ###
 
-POST http://localhost:8080/series/mydata2/values
+POST http://localhost:8080/series/mydata/values
 Content-Type: application/json
 
 [
@@ -36,4 +36,4 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8080/series/mydata3/values?from=1600783227&to=1600883226&aggregation=AVG&timeBucket=500
+GET http://localhost:8080/series/mydata/values?from=1600783227&to=1600883226&aggregation=AVG&timeBucket=500

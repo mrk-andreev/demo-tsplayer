@@ -39,9 +39,8 @@ public class SeriesResource {
       @PathParam("key") String key,
       @QueryParam("from") Long from,
       @QueryParam("to") Long to,
-      @QueryParam("aggregation") Aggregation aggregation,
-      @QueryParam("timeBucket") Long timeBucket) {
-    return dataService.fetch(key, from, to, aggregation, timeBucket);
+      @QueryParam("aggregation") Aggregation aggregation) {
+    return dataService.fetch(key, from, to, aggregation);
   }
 
   @POST
