@@ -3,6 +3,7 @@
  *
  * <p>DO NOT EDIT DIRECTLY
  */
+
 package name.mrkandreev.avro;
 
 import org.apache.avro.message.BinaryMessageDecoder;
@@ -76,7 +77,7 @@ public class DataResponseValue extends org.apache.avro.specific.SpecificRecordBa
    * @param b a byte buffer holding serialized data for an instance of this class
    * @return a DataResponseValue instance decoded from the given buffer
    * @throws java.io.IOException if the given bytes could not be deserialized into an instance of
-   *     this class
+   *                             this class
    */
   public static DataResponseValue fromByteBuffer(java.nio.ByteBuffer b) throws java.io.IOException {
     return DECODER.decode(b);
@@ -89,13 +90,14 @@ public class DataResponseValue extends org.apache.avro.specific.SpecificRecordBa
    * Default constructor. Note that this does not initialize fields to their default values from the
    * schema. If that is desired then one should use <code>newBuilder()</code>.
    */
-  public DataResponseValue() {}
+  public DataResponseValue() {
+  }
 
   /**
    * All-args constructor.
    *
    * @param timestamp The new value for timestamp
-   * @param value The new value for value
+   * @param value     The new value for value
    */
   public DataResponseValue(java.lang.Long timestamp, java.lang.Double value) {
     this.timestamp = timestamp;
@@ -109,6 +111,7 @@ public class DataResponseValue extends org.apache.avro.specific.SpecificRecordBa
   public org.apache.avro.Schema getSchema() {
     return SCHEMA$;
   }
+
   // Used by DatumWriter.  Applications should not call.
   public java.lang.Object get(int field$) {
     switch (field$) {
@@ -212,7 +215,9 @@ public class DataResponseValue extends org.apache.avro.specific.SpecificRecordBa
     }
   }
 
-  /** RecordBuilder for DataResponseValue instances. */
+  /**
+   * RecordBuilder for DataResponseValue instances.
+   */
   @org.apache.avro.specific.AvroGenerated
   public static class Builder
       extends org.apache.avro.specific.SpecificRecordBuilderBase<DataResponseValue>
@@ -221,7 +226,9 @@ public class DataResponseValue extends org.apache.avro.specific.SpecificRecordBa
     private long timestamp;
     private double value;
 
-    /** Creates a new Builder */
+    /**
+     * Creates a new Builder
+     */
     private Builder() {
       super(SCHEMA$);
     }

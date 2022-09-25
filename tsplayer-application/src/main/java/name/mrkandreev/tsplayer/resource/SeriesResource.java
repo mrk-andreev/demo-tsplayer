@@ -20,7 +20,8 @@ import name.mrkandreev.tsplayer.service.DataService;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class SeriesResource {
-  @Inject DataService dataService;
+  @Inject
+  DataService dataService;
 
   @POST
   public Boolean create(SeriesInput input) {
