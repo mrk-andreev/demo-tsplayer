@@ -3,6 +3,7 @@
  *
  * <p>DO NOT EDIT DIRECTLY
  */
+
 package name.mrkandreev.avro;
 
 import org.apache.avro.message.BinaryMessageDecoder;
@@ -77,7 +78,7 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase
    * @param b a byte buffer holding serialized data for an instance of this class
    * @return a DataResponse instance decoded from the given buffer
    * @throws java.io.IOException if the given bytes could not be deserialized into an instance of
-   *     this class
+   *                             this class
    */
   public static DataResponse fromByteBuffer(java.nio.ByteBuffer b) throws java.io.IOException {
     return DECODER.decode(b);
@@ -92,15 +93,16 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase
    * Default constructor. Note that this does not initialize fields to their default values from the
    * schema. If that is desired then one should use <code>newBuilder()</code>.
    */
-  public DataResponse() {}
+  public DataResponse() {
+  }
 
   /**
    * All-args constructor.
    *
-   * @param requestId The new value for requestId
-   * @param isSuccess The new value for isSuccess
+   * @param requestId    The new value for requestId
+   * @param isSuccess    The new value for isSuccess
    * @param errorMessage The new value for errorMessage
-   * @param values The new value for values
+   * @param values       The new value for values
    */
   public DataResponse(
       java.lang.CharSequence requestId,
@@ -120,6 +122,7 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase
   public org.apache.avro.Schema getSchema() {
     return SCHEMA$;
   }
+
   // Used by DatumWriter.  Applications should not call.
   public java.lang.Object get(int field$) {
     switch (field$) {
@@ -268,7 +271,9 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase
     }
   }
 
-  /** RecordBuilder for DataResponse instances. */
+  /**
+   * RecordBuilder for DataResponse instances.
+   */
   @org.apache.avro.specific.AvroGenerated
   public static class Builder
       extends org.apache.avro.specific.SpecificRecordBuilderBase<DataResponse>
@@ -279,7 +284,9 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase
     private java.lang.CharSequence errorMessage;
     private java.util.List<name.mrkandreev.avro.DataResponseValue> values;
 
-    /** Creates a new Builder */
+    /**
+     * Creates a new Builder
+     */
     private Builder() {
       super(SCHEMA$);
     }
@@ -521,7 +528,7 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase
             fieldSetFlags()[3]
                 ? this.values
                 : (java.util.List<name.mrkandreev.avro.DataResponseValue>)
-                    defaultValue(fields()[3]);
+                defaultValue(fields()[3]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -572,9 +579,10 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase
       e0.customEncode(out);
     }
     out.writeArrayEnd();
-    if (actualSize0 != size0)
+    if (actualSize0 != size0) {
       throw new java.util.ConcurrentModificationException(
           "Array-size written was " + size0 + ", but element count was " + actualSize0 + ".");
+    }
   }
 
   @Override
@@ -595,7 +603,9 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase
             new SpecificData.Array<name.mrkandreev.avro.DataResponseValue>(
                 (int) size0, SCHEMA$.getField("values").schema());
         this.values = a0;
-      } else a0.clear();
+      } else {
+        a0.clear();
+      }
       SpecificData.Array<name.mrkandreev.avro.DataResponseValue> ga0 =
           (a0 instanceof SpecificData.Array
               ? (SpecificData.Array<name.mrkandreev.avro.DataResponseValue>) a0
@@ -636,7 +646,9 @@ public class DataResponse extends org.apache.avro.specific.SpecificRecordBase
                   new SpecificData.Array<name.mrkandreev.avro.DataResponseValue>(
                       (int) size0, SCHEMA$.getField("values").schema());
               this.values = a0;
-            } else a0.clear();
+            } else {
+              a0.clear();
+            }
             SpecificData.Array<name.mrkandreev.avro.DataResponseValue> ga0 =
                 (a0 instanceof SpecificData.Array
                     ? (SpecificData.Array<name.mrkandreev.avro.DataResponseValue>) a0

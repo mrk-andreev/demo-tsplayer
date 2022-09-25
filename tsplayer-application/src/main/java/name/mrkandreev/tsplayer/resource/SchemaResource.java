@@ -12,7 +12,8 @@ import name.mrkandreev.tsplayer.service.DataCompressionService;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class SchemaResource {
-  @Inject DataCompressionService dataCompressionService;
+  @Inject
+  DataCompressionService dataCompressionService;
 
   @GET
   public String getSchema() {

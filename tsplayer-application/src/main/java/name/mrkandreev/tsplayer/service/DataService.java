@@ -1,5 +1,8 @@
 package name.mrkandreev.tsplayer.service;
 
+import static name.mrkandreev.tsplayer.util.JedisExceptionResolver.throwSpecific;
+
+
 import com.redislabs.redistimeseries.Aggregation;
 import com.redislabs.redistimeseries.Measurement;
 import com.redislabs.redistimeseries.RedisTimeSeries;
@@ -7,10 +10,12 @@ import com.redislabs.redistimeseries.Value;
 import com.redislabs.redistimeseries.information.Info;
 import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import name.mrkandreev.tsplayer.config.RedisConfig;
 import name.mrkandreev.tsplayer.dto.SeriesInput;
 import name.mrkandreev.tsplayer.dto.SeriesMetaDto;
 import name.mrkandreev.tsplayer.dto.ValueInput;
+import name.mrkandreev.tsplayer.exception.StorageConnectionError;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisDataException;
@@ -20,6 +25,7 @@ public class DataService {
   private static final double POINTS_LIMIT = 1000d;
   private final RedisTimeSeries rts;
 
+  @Inject
   public DataService(RedisConfig redisConfig) {
     JedisPoolConfig poolConfig = new JedisPoolConfig();
     poolConfig.setJmxEnabled(false);
@@ -30,7 +36,15 @@ public class DataService {
   }
 
   public Boolean create(SeriesInput input) {
-    return rts.create(input.getName());
+    try {
+      return rts.create(input.getName());
+    } catch (JedisDataException e) {
+      if ("ERR TSDB: key already exists".equals(e.getMessage())) {
+        return false;
+      }
+
+      throw new StorageConnectionError(e);
+    }
   }
 
   public Value[] fetch(String key, Long from, Long to, Aggregation aggregation) {
@@ -58,8 +72,8 @@ public class DataService {
       Info info = rts.info(key);
       return new SeriesMetaDto(
           info.getProperty("firstTimestamp"), info.getProperty("lastTimestamp"));
-    } catch (JedisDataException e) {
-      return null;
+    } catch (Exception e) {
+      return throwSpecific(e);
     }
   }
 }
