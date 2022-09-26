@@ -24,15 +24,21 @@ import redis.clients.jedis.exceptions.JedisDataException;
 public class DataService {
   private static final double POINTS_LIMIT = 1000d;
   private final RedisTimeSeries rts;
+  private final JedisPool jedisPool;
 
   @Inject
   public DataService(RedisConfig redisConfig) {
     JedisPoolConfig poolConfig = new JedisPoolConfig();
     poolConfig.setJmxEnabled(false);
 
-    rts =
-        new RedisTimeSeries(
-            new JedisPool(poolConfig, redisConfig.getHost(), redisConfig.getPort()));
+    jedisPool = new JedisPool(poolConfig, redisConfig.getHost(), redisConfig.getPort());
+    rts = new RedisTimeSeries(jedisPool);
+  }
+
+  public void delete(String key) {
+    try (var resource = jedisPool.getResource()) {
+      resource.del(key);
+    }
   }
 
   public Boolean create(SeriesInput input) {
