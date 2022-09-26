@@ -2,7 +2,7 @@ version: '3'
 
 services:
   app:
-    image: markandreev/demo-tsplayer:latest
+    image: markandreev/demo-tsplayer:v20220926
     depends_on:
       - "redis"
     ports:

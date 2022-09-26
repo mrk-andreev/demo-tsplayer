@@ -8,7 +8,7 @@ build_ui:
 	cd tsplayer-ui && npm i && npm run build && cp bundle.min.js ../tsplayer-application/src/main/resources/META-INF/resources/
 
 build_application:
-	cd tsplayer-application && ./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.container-image.name=demo-tsplayer -Dquarkus.container-image.tag=latest -DskipTests=true
+	cd tsplayer-application && ./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.container-image.registry=docker.io -Dquarkus.container-image.group=markandreev -Dquarkus.container-image.name=demo-tsplayer -Dquarkus.container-image.tag=v20220926 -DskipTests=true
 
 upload_application: build_application
-	docker push markandreev/demo-tsplayer:latest
+	docker push markandreev/demo-tsplayer:v20220926
