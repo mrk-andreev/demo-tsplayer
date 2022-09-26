@@ -12,11 +12,4 @@ services:
       REDIS_PORT: 6379
   redis:
     image: "redislabs/redistimeseries:1.4.3"
-  datagen:
-    image: "markandreev/demo-tsplayer-datagen:latest"
-    depends_on:
-      - "app"
-    environment:
-      SERVICE_HOST: app:8080
-      STEPS_COUNT: 10000000
 
